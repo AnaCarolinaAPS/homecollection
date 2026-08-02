@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriaProdutoController;
+use App\Http\Controllers\ProdutoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,7 +27,14 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{categoriaProduto}', [CategoriaProdutoController::class, 'destroy'])->name('categoriaProduto.destroy');
     });
 
-
+    // Rotas para gerenciamento de Produtos
+    Route::prefix('/produto')->group(function () {
+        Route::get('/', [ProdutoController::class, 'index'])->name('produto.index');
+        Route::post('/', [ProdutoController::class, 'store'])->name('produto.store');
+        Route::get('/{produto}', [ProdutoController::class, 'show'])->name('produto.show');
+        Route::put('/{produto}', [ProdutoController::class, 'update'])->name('produto.update');
+        Route::delete('/{produto}', [ProdutoController::class, 'destroy'])->name('produto.destroy');
+    });
 
 });
 

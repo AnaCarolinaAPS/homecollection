@@ -16,10 +16,15 @@
                             <i class="ri-pencil-line"></i>
                             <span>Cadastros</span>
                         </a>
-                        <ul class="sub-menu" aria-expanded="true">
-                            <li><a href="{{ route('categoriaProduto.index'); }}">Categoria</a></li>
-                        </ul>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">Produtos</a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li><a href="{{ route('categoriaProduto.index'); }}">Categorias</a></li>
+                                <li><a href="{{ route('produto.index'); }}">Produtos</a></li>
+                            </ul>
+                        </li>
                     </li>
+
                 </li>
             </ul>
         </div>
