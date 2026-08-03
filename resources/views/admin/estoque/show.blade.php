@@ -1,6 +1,6 @@
 
 @extends('layouts.master')
-@section('titulo', 'Produtos | HomeController')
+@section('titulo', 'Estoques | HomeController')
 
 @section('admin')
 <div class="page-content">
@@ -10,12 +10,13 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0">Produtos</h4>
+                    <h4 class="mb-sm-0">Estoques</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
                             <li class="breadcrumb-item"><a href="javascript: void(0);">Admin</a></li>
-                            <li class="breadcrumb-item active">Produtos</li>
+                            <li class="breadcrumb-item"><a href="{{ route('estoque.index'); }}">Estoques</a></li>
+                            <li class="breadcrumb-item active">{{ $produto->nome; }}</li>
                         </ol>
                     </div>
                 </div>
@@ -26,27 +27,29 @@
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">Produtos</h4>
+                        <h4 class="card-title mb-4">Estoques de {{ $produto->nome; }} - {{ $produto->quantidade_em_estoque(); }} Unidades Disponíveis</h4>
                         <button type="button" class="btn btn-success waves-effect waves-light mb-2" data-bs-toggle="modal" data-bs-target="#novoModal">
-                            <i class="fas fa-plus"></i> Novo
+                            <i class="fas fa-plus"></i> Movimento
                         </button>
                         <div class="table-responsive">
                             <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
-                                        <th>Nome</th>
-                                        <th>Categoria</th>
-                                        <th>Data Criação</th>
+                                        <th>Produto</th>
+                                        <th>Quantidade</th>
+                                        <th>Vencimento</th>
                                     </tr>
                                 </thead><!-- end thead -->
                                 <tbody>
-                                    @foreach ($all_items as $item)
+                                    @foreach ($produto->movimentos_estoque->sortByDesc('data_movimento')  as $item)
                                     <tr class="abrirModal" data-item-id="{{ $item->id; }}" data-bs-toggle="modal" data-bs-target="#detalhesModal">
                                         <td><h6 class="mb-0">{{ $item->id }}</h6></td>
-                                        <td>{{ $item->nome }}</td>
-                                        <td>{{ $item->categoria->nome }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->data_movimento)->format('d/m/Y') }}</td>
+                                        <td>{{ $item->quantidade }}</td>
+                                        <td>
+                                            {{ $item->vencimento ? \Carbon\Carbon::parse($item->vencimento)->format('d/m/Y') : 'Sem Data Definida' }}
+                                        </td>
                                     </tr>
                                     @endforeach
                                      <!-- end -->
@@ -69,33 +72,28 @@
                     <h5 class="modal-title">Novo Registro</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form class="form-horizontal mt-3" method="POST" action="{{ route('produto.store') }}">
+                <form class="form-horizontal mt-3" method="POST" action="{{ route('estoque.store') }}">
                     @csrf
                     <div class="modal-body">
                         {{-- ADICIONAR MAIS TARDE OUTROS Atributos --}}
                         <div class="row">
+                            <input type="hidden" name="produto_id" value="{{ $produto->id }}">
                             <div class="col">
                                 <div class="form-group">
-                                    <label for="nome">Nome</label>
-                                    <input type="text" class="form-control" id="name" name="nome" placeholder="Nome da Categoria do Produto" maxlength="255" required>
+                                    <label for="produto_id">Produto</label>
+                                    <input type="text" class="form-control" id="produto" placeholder="Nome do Produto" maxlength="255" value="{{$produto->nome}}" readonly>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <label for="nome">Categoria</label>
-                                    <select class="selectpicker form-control" data-live-search="true" id="categoria_id" name="categoria_id" >
-                                        @foreach ($all_categorias as $categoria)
-                                            <option value="{{ $categoria->id }}"> {{ $categoria->nome }} </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="nome">Quantidade</label>
+                                    <input type="number" class="form-control" id="quantidade" name="quantidade" placeholder="Quantidade do Produto" maxlength="255" required>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
+                            <div class="col">
                                 <div class="form-group">
-                                    <label for="description">Descrição</label>
-                                    <textarea name="descricao" id="description" class="form-control" rows="3"></textarea>
+                                    <label for="data">Data Movimento</label>
+                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::today()->format('Y-m-d') ; }}" id="data" name="data_movimento">
                                 </div>
                             </div>
                         </div>
@@ -114,7 +112,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tituloModal">Categoria Produto</h5>
+                    <h5 class="modal-title" id="tituloModal">Estoque de {{$produto->nome}}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form class="form-horizontal mt-3" method="POST" id="formAtualizacao" action="">
@@ -125,35 +123,20 @@
                         <div class="row">
                             <div class="col">
                                 <div class="form-group">
-                                    <label for="name">Nome</label>
-                                    <input type="text" class="form-control" id="dname" name="nome" placeholder="Nome da Categoria do Produto" maxlength="255" required>
+                                    <label for="data">Data Movimento</label>
+                                    <input class="form-control" type="date" id="ddatamovimento" name="data_movimento">
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <label for="nome">Categoria</label>
-                                    <select class="selectpicker form-control" data-live-search="true" id="dcategoria_id" name="categoria_id" >
-                                        @foreach ($all_categorias as $categoria)
-                                            <option value="{{ $categoria->id }}"> {{ $categoria->nome }} </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="nome">Quantidade</label>
+                                    <input type="number" class="form-control" id="dquantidade" name="quantidade" placeholder="Quantidade do Produto" maxlength="255" required>
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <label for="is_active">Status</label>
-                                    <select class="selectpicker form-control" id="dis_active" name="is_active">
-                                        <option value="1"> Ativo </option>
-                                        <option value="0"> Inativo </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="description">Descrição</label>
-                                    <textarea name="descricao" id="ddescription" class="form-control" rows="3"></textarea>
+                                    <label for="data">Data Vencimento</label>
+                                    <input class="form-control" type="date" id="ddatavencimento" name="data_vencimento">
                                 </div>
                             </div>
                         </div>
@@ -194,7 +177,6 @@
             </div>
         </div>
     </div>
-
 </div>
 <!-- End Page-content -->
 
@@ -203,23 +185,21 @@
     document.querySelectorAll('.abrirModal').forEach(item => {
         item.addEventListener('click', event => {
             const itemId = event.currentTarget.dataset.itemId;
-            const url = "{{ route('produto.show', ':id') }}".replace(':id', itemId);
+            const url = "{{ route('estoque.show', ':id') }}".replace(':id', itemId);
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('tituloModal').innerText = data.name;
+                    // document.getElementById('tituloModal').innerText = data.produto.nome;
                     document.getElementById('did').value = data.id;
-                    document.getElementById('dname').value = data.nome;
-                    document.getElementById('ddescription').value = data.descricao;
-                    $('#dcategoria_id').selectpicker('val', String(data.categoria.id));
-                    $('#dis_active').selectpicker('val', String(data.is_active));
-                    console.log(data.is_active);
+                    document.getElementById('dquantidade').value = data.quantidade;
+                    document.getElementById('ddatamovimento').value = data.data_movimento;
+                    document.getElementById('ddatavencimento').value = data.vencimento;
 
                     var formAtualizacao = document.getElementById('formAtualizacao');
-                    formAtualizacao.setAttribute('action', "{{ route('produto.update', ['produto' => ':id']) }}".replace(':id', data.id));
+                    formAtualizacao.setAttribute('action', "{{ route('estoque.update', ['estoque' => ':id']) }}".replace(':id', data.id));
 
                     var formDelete = document.getElementById('formDeleteModal');
-                    formDelete.setAttribute('action', "{{ route('produto.destroy', ['produto' => ':id']) }}".replace(':id', data.id));
+                    formDelete.setAttribute('action', "{{ route('estoque.destroy', ['estoque' => ':id']) }}".replace(':id', data.id));
                 })
                 .catch(error => console.error('Erro:', error));
         });

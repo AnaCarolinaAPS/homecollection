@@ -25,4 +25,16 @@ class Produto extends Model
     {
         return $this->belongsTo(CategoriaProduto::class, 'categoria_id');
     }
+
+    // Relação com Estoque
+    public function movimentos_estoque()
+    {
+        return $this->hasMany(Estoque::class, 'produto_id');
+    }
+
+    //Para resgatar as quantidades
+    public function quantidade_em_estoque()
+    {
+        return $this->movimentos_estoque->sum('quantidade');
+    }
 }
