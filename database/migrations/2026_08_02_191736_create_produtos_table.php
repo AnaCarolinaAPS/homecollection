@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('nome');
             $table->text('descricao')->nullable();
+            // $table->enum('unidade', ['kgs', 'litros', 'unidades'])->nullable();
             $table->boolean('is_active')->default(true); // true = active, false = inactive
-            $table->foreignId('categoria_id')->nullable()->constrained('categoria_produtos')->nullOnDelete(); 
+            $table->foreignId('categoria_id')->constrained('categoria_produtos')->cascadeOnDelete(); 
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriaProdutoController;
 use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\EstoqueController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,6 +35,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/{produto}', [ProdutoController::class, 'show'])->name('produto.show');
         Route::put('/{produto}', [ProdutoController::class, 'update'])->name('produto.update');
         Route::delete('/{produto}', [ProdutoController::class, 'destroy'])->name('produto.destroy');
+    });
+
+    // Rotas para gerenciamento de Estoque
+    Route::prefix('/estoque')->group(function () {
+        Route::get('/', [EstoqueController::class, 'index'])->name('estoque.index');
+        Route::post('/', [EstoqueController::class, 'store'])->name('estoque.store');
+        Route::get('/produto/{produto}', [EstoqueController::class, 'showEstoque'])->name('estoque.showEstoque');
+        Route::get('/{estoque}', [EstoqueController::class, 'show'])->name('estoque.show');
+        Route::put('/{estoque}', [EstoqueController::class, 'update'])->name('estoque.update');
+        Route::delete('/{estoque}', [EstoqueController::class, 'destroy'])->name('estoque.destroy');
     });
 
 });

@@ -21,6 +21,7 @@
                             <ul class="sub-menu" aria-expanded="true">
                                 <li><a href="{{ route('categoriaProduto.index'); }}">Categorias</a></li>
                                 <li><a href="{{ route('produto.index'); }}">Produtos</a></li>
+                                <li><a href="{{ route('estoque.index'); }}">Estoque</a></li>
                             </ul>
                         </li>
                     </li>
