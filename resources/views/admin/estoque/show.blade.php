@@ -32,11 +32,11 @@
                             <i class="fas fa-plus"></i> Movimento
                         </button>
                         <div class="table-responsive">
-                            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <table class="table table-striped table-bordered dt-responsive nowrap datatable-default" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
-                                        <th>Produto</th>
+                                        <th>Movimento</th>
                                         <th>Quantidade</th>
                                         <th>Vencimento</th>
                                     </tr>
@@ -136,7 +136,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="data">Data Vencimento</label>
-                                    <input class="form-control" type="date" id="ddatavencimento" name="data_vencimento">
+                                    <input class="form-control" type="date" id="ddatavencimento" name="vencimento">
                                 </div>
                             </div>
                         </div>
