@@ -31,11 +31,12 @@
                             <i class="fas fa-plus"></i> Novo
                         </button>
                         <div class="table-responsive">
-                            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <table class="table table-striped table-bordered dt-responsive nowrap datatable-default" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead class="table-light">
                                     <tr>
                                         <th>ID</th>
                                         <th>Nome</th>
+                                        <th>Em Estoque</th>
                                         <th>Categoria</th>
                                         <th>Data Criação</th>
                                     </tr>
@@ -45,6 +46,7 @@
                                     <tr class="abrirModal" data-item-id="{{ $item->id; }}" data-bs-toggle="modal" data-bs-target="#detalhesModal">
                                         <td><h6 class="mb-0">{{ $item->id }}</h6></td>
                                         <td>{{ $item->nome }}</td>
+                                        <td>{{ $item->quantidade_em_estoque() }}</td>
                                         <td>{{ $item->categoria->nome }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i') }}</td>
                                     </tr>
