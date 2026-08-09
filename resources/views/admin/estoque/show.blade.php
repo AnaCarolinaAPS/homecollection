@@ -37,6 +37,7 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Movimento</th>
+                                        <th>Identificador</th>
                                         <th>Quantidade</th>
                                         <th>Vencimento</th>
                                     </tr>
@@ -46,6 +47,7 @@
                                     <tr class="abrirModal" data-item-id="{{ $item->id; }}" data-bs-toggle="modal" data-bs-target="#detalhesModal">
                                         <td><h6 class="mb-0">{{ $item->id }}</h6></td>
                                         <td>{{ \Carbon\Carbon::parse($item->data_movimento)->format('d/m/Y') }}</td>
+                                        <td>{{ $item->descricao_produto }}</td>
                                         <td>{{ $item->quantidade }}</td>
                                         <td>
                                             {{ $item->vencimento ? \Carbon\Carbon::parse($item->vencimento)->format('d/m/Y') : 'Sem Data Definida' }}
@@ -80,8 +82,8 @@
                             <input type="hidden" name="produto_id" value="{{ $produto->id }}">
                             <div class="col">
                                 <div class="form-group">
-                                    <label for="produto_id">Produto</label>
-                                    <input type="text" class="form-control" id="produto" placeholder="Nome do Produto" maxlength="255" value="{{$produto->nome}}" readonly>
+                                    <label for="data">Data Movimento</label>
+                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::today()->format('Y-m-d') ; }}" id="data" name="data_movimento">
                                 </div>
                             </div>
                             <div class="col">
@@ -90,10 +92,18 @@
                                     <input type="number" class="form-control" id="quantidade" name="quantidade" placeholder="Quantidade do Produto" maxlength="255" required>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col">
                                 <div class="form-group">
-                                    <label for="data">Data Movimento</label>
-                                    <input class="form-control" type="date" value="{{ \Carbon\Carbon::today()->format('Y-m-d') ; }}" id="data" name="data_movimento">
+                                    <label for="descricao_produto">Identificação do Produto</label>
+                                    <input type="text" class="form-control" id="descricao_produto" name="descricao_produto" placeholder="Identificação do Produto (Marca)" maxlength="255">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="data">Data Vencimento</label>
+                                    <input class="form-control" type="date" id="ddatavencimento" name="vencimento">
                                 </div>
                             </div>
                         </div>
@@ -131,6 +141,14 @@
                                 <div class="form-group">
                                     <label for="nome">Quantidade</label>
                                     <input type="number" class="form-control" id="dquantidade" name="quantidade" placeholder="Quantidade do Produto" maxlength="255" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="descricao_produto">Identificação do Produto</label>
+                                    <input type="text" class="form-control" id="ddescricaoproduto" name="descricao_produto" placeholder="Identificação do Produto (Marca)" maxlength="255">
                                 </div>
                             </div>
                             <div class="col">
@@ -194,6 +212,7 @@
                     document.getElementById('dquantidade').value = data.quantidade;
                     document.getElementById('ddatamovimento').value = data.data_movimento;
                     document.getElementById('ddatavencimento').value = data.vencimento;
+                    document.getElementById('ddescricaoproduto').value = data.descricao_produto;
 
                     var formAtualizacao = document.getElementById('formAtualizacao');
                     formAtualizacao.setAttribute('action', "{{ route('estoque.update', ['estoque' => ':id']) }}".replace(':id', data.id));

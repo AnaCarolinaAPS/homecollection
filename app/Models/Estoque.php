@@ -18,6 +18,7 @@ class Estoque extends Model
         'quantidade',
         'vencimento',
         'data_movimento',
+        'descricao_produto',
     ];
 
     // Relação com o Produto 
