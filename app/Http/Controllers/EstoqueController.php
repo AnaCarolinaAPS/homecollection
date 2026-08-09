@@ -37,6 +37,7 @@ class EstoqueController extends Controller
                 'quantidade' => 'required|numeric',
                 'vencimento' => 'nullable|date',
                 'data_movimento' => 'required|date',
+                'descricao_produto' => 'nullable|string',
                 // Adicione outras regras de validação conforme necessário
             ]);
 
@@ -46,6 +47,7 @@ class EstoqueController extends Controller
                 'quantidade' => $request->input('quantidade'),
                 'vencimento' => $request->input('vencimento'),
                 'data_movimento' => $request->input('data_movimento'),
+                'descricao_produto' => $request->input('descricao_produto'),
                 // Adicione outros campos conforme necessário
             ]);
 
@@ -112,6 +114,7 @@ class EstoqueController extends Controller
                 'quantidade' => 'required|numeric',
                 'data_movimento' => 'required|date',
                 'vencimento' => 'nullable|date',
+                'descricao_produto' => 'nullable|string',
             ]);
 
             // Atualizar os dados
@@ -120,6 +123,7 @@ class EstoqueController extends Controller
                 'quantidade' => $request->input('quantidade'),
                 'vencimento' => $request->input('vencimento'),
                 'data_movimento' => $request->input('data_movimento'),
+                'descricao_produto' => $request->input('descricao_produto'),
                 // Adicione outros campos conforme necessário
             ]);
 
